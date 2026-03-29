@@ -1,0 +1,81 @@
+---
+alwaysApply: true
+---
+# Project Identity
+This project is a WeChat mini-program + FastAPI backend MVP for sprint running video analysis in high school physical exam teams.
+
+# Product Scope
+Only support:
+- single athlete
+- side-view video
+- standardized mid-sprint clip
+- offline upload and async backend analysis
+- 5 core metrics:
+  - step_rate
+  - trunk_lean_mean
+  - arm_swing_variability
+  - left_right_timing_diff
+  - tech_stability_score
+
+Do NOT add:
+- injury prediction
+- diagnosis
+- medical advice
+- arbitrary-angle analysis
+- multi-person analysis
+- real-time on-device inference
+- ranking
+- social features
+
+# Tech Stack
+- Frontend: WeChat mini-program
+- Backend: Python + FastAPI
+- Video processing: OpenCV
+- Pose estimation: MediaPipe Pose Landmarker
+- Database: MySQL
+- Object storage: local abstraction or cloud-compatible storage
+- Async jobs: Celery or RQ
+
+# Workflow Rules
+- Never expand scope unless explicitly instructed.
+- Never modify API contracts unless explicitly instructed.
+- Never replace the tech stack unless explicitly instructed.
+- Prefer small, incremental changes over broad refactors.
+- Always list changed files at the end.
+- Always explain what is done, what is not done, and what needs verification.
+- If a requirement is ambiguous, do not invent a feature. Add a TODO comment or ask for clarification.
+- Do not silently introduce extra dependencies.
+
+# Coding Rules
+- Use Python type hints everywhere in backend code.
+- Use Pydantic schemas for request/response models.
+- Keep functions focused and small.
+- Add clear error handling for invalid videos.
+- Keep file structure modular.
+- Use English for code and comments.
+- Use Chinese only in user-facing copy if required.
+
+# API Rules
+- Backend routes should be split by domain:
+  - videos
+  - analysis
+  - reports
+  - athletes
+- Do not rename fields that already exist in api_contract.md
+- Keep response shape stable
+
+# Quality Rules
+- After each meaningful code change:
+  1. run lint if configured
+  2. run type checks if configured
+  3. run relevant tests
+- If tests are missing, add minimal tests for the changed module.
+- Do not claim something works unless you actually ran the relevant command.
+
+# Delivery Rules
+For each task, output:
+1. summary
+2. changed files
+3. commands run
+4. test results
+5. open risks

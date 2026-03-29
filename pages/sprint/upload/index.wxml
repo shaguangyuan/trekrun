@@ -1,0 +1,148 @@
+<view class="s-page page">
+  <view class="s-hero">
+    <view class="s-title">创建分析任务</view>
+    <view class="s-subtitle">上传短跑视频并填写训练信息，系统将自动完成姿态分析与指标计算。</view>
+  </view>
+
+  <view class="s-card">
+    <view class="s-card-title">视频素材</view>
+    <view class="video-picker {{uploading ? 'video-picker-disabled' : ''}}" bindtap="{{uploading ? '' : 'chooseVideo'}}" hover-class="{{uploading ? '' : 'press-soft'}}">
+      <view wx:if="{{!videoPath}}" class="picker-placeholder">
+        <text class="picker-icon">＋</text>
+        <text class="picker-text">点击选择视频</text>
+        <text class="s-note">建议：单人、侧面、全身入镜，光线稳定。</text>
+      </view>
+      <view wx:else class="picker-selected">
+        <text class="picker-filename">{{videoName}}</text>
+        <text wx:if="{{!uploading}}" class="picker-change">重新选择视频</text>
+        <text wx:if="{{uploading}}" class="picker-uploading">上传中...</text>
+      </view>
+    </view>
+
+    <!-- 上传进度条 -->
+    <view class="upload-progress-wrap" wx:if="{{uploading}}">
+      <view class="upload-progress-bar">
+        <view class="upload-progress-fill" style="width: {{uploadProgress}}%;"></view>
+      </view>
+      <view class="upload-progress-text">{{Math.round(uploadProgress)}}%</view>
+    </view>
+    <view class="codec-hint" wx:if="{{codecHintVisible}}">
+      {{codecHintText}}
+    </view>
+  </view>
+
+  <view class="s-card" wx:if="{{debugEnabled}}">
+    <view class="s-card-title">Pose 调试可视化</view>
+    <view class="debug-toggle-grid">
+      <label class="debug-toggle-item">
+        <text>showLandmarks</text>
+        <switch checked="{{showLandmarks}}" data-key="showLandmarks" bindchange="onToggleDebug" color="#0A84FF" />
+      </label>
+      <label class="debug-toggle-item">
+        <text>showConnections</text>
+        <switch checked="{{showConnections}}" data-key="showConnections" bindchange="onToggleDebug" color="#0A84FF" />
+      </label>
+      <label class="debug-toggle-item">
+        <text>showIndex</text>
+        <switch checked="{{showIndex}}" data-key="showIndex" bindchange="onToggleDebug" color="#0A84FF" />
+      </label>
+      <label class="debug-toggle-item">
+        <text>showVisibility</text>
+        <switch checked="{{showVisibility}}" data-key="showVisibility" bindchange="onToggleDebug" color="#0A84FF" />
+      </label>
+    </view>
+
+    <view class="debug-preview-wrap">
+      <video
+        class="debug-video"
+        id="debugVideo"
+        src="{{videoPath}}"
+        controls
+        autoplay="{{false}}"
+        loop="{{false}}"
+        object-fit="contain"
+        bindloadedmetadata="onDebugVideoMeta"
+        bindloadeddata="onDebugVideoLoadedData"
+        bindplay="onDebugVideoPlay"
+        bindtimeupdate="onDebugVideoTimeUpdate"
+        binderror="onDebugVideoError"
+      />
+      <canvas
+        class="debug-overlay {{hasLandmarks ? '' : 'debug-overlay-hidden'}}"
+        id="poseOverlay"
+        type="2d"
+      />
+      <view class="debug-loading" wx:if="{{debugLoading}}">
+        <text class="debug-loading-text">{{debugLoadingText}}</text>
+      </view>
+    </view>
+    <view class="s-note">基于你选择的视频进行调试叠加；低可见性关键点会显示为橙/红色。</view>
+    <view class="play-error-hint" wx:if="{{videoPlayErrorText}}">
+      {{videoPlayErrorText}}
+    </view>
+  </view>
+
+  <view class="s-card">
+    <view class="s-card-title">基础信息</view>
+    <input
+      class="s-input"
+      placeholder="运动员编号（如 A001）"
+      bindinput="onAthleteIdInput"
+      value="{{form.athlete_id}}"
+      placeholder-class="placeholder"
+    />
+  </view>
+
+  <view class="s-card">
+    <view class="s-card-title">训练标签</view>
+    <view class="group-label">参赛项目</view>
+    <radio-group bindchange="onEventGroupChange" class="radio-group">
+      <label class="radio-chip {{form.event_group === '100' ? 'radio-chip-active' : ''}}">
+        <radio value="100" checked="{{form.event_group === '100'}}" color="#0A84FF" />
+        <text>100m</text>
+      </label>
+      <label class="radio-chip {{form.event_group === '200' ? 'radio-chip-active' : ''}}">
+        <radio value="200" checked="{{form.event_group === '200'}}" color="#0A84FF" />
+        <text>200m</text>
+      </label>
+    </radio-group>
+
+    <view class="group-label mt">训练类型</view>
+    <radio-group bindchange="onSessionTypeChange" class="radio-group">
+      <label class="radio-chip {{form.session_type === 'normal' ? 'radio-chip-active' : ''}}">
+        <radio value="normal" checked="{{form.session_type === 'normal'}}" color="#0A84FF" />
+        <text>常规训练</text>
+      </label>
+      <label class="radio-chip {{form.session_type === 'post_fatigue' ? 'radio-chip-active' : ''}}">
+        <radio value="post_fatigue" checked="{{form.session_type === 'post_fatigue'}}" color="#0A84FF" />
+        <text>疲劳后</text>
+      </label>
+      <label class="radio-chip {{form.session_type === 'pre_test' ? 'radio-chip-active' : ''}}">
+        <radio value="pre_test" checked="{{form.session_type === 'pre_test'}}" color="#0A84FF" />
+        <text>测试前</text>
+      </label>
+    </radio-group>
+
+    <view class="group-label mt">疲劳状态</view>
+    <radio-group bindchange="onFatigueStateChange" class="radio-group">
+      <label class="radio-chip {{form.fatigue_state === 'no' ? 'radio-chip-active' : ''}}">
+        <radio value="no" checked="{{form.fatigue_state === 'no'}}" color="#0A84FF" />
+        <text>否</text>
+      </label>
+      <label class="radio-chip {{form.fatigue_state === 'yes' ? 'radio-chip-active' : ''}}">
+        <radio value="yes" checked="{{form.fatigue_state === 'yes'}}" color="#0A84FF" />
+        <text>是</text>
+      </label>
+    </radio-group>
+  </view>
+
+  <view class="submit-wrap">
+    <view
+      class="s-btn-primary {{(!canSubmit || uploading) ? 's-btn-primary-disabled' : ''}}"
+      hover-class="{{(canSubmit && !uploading) ? 's-btn-primary-pressed' : ''}}"
+      bindtap="submit"
+    >
+      {{uploading ? '上传中...' : '开始分析'}}
+    </view>
+  </view>
+</view>

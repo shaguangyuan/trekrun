@@ -1,0 +1,233 @@
+@import "/pages/sprint/common/ui.wxss";
+
+.page {
+  padding-bottom: 172rpx;
+}
+
+.video-picker {
+  min-height: 188rpx;
+  border: 1rpx dashed #d7d7dc;
+  border-radius: 14rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fafafe;
+}
+
+.press-soft {
+  opacity: 0.9;
+}
+
+.picker-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 26rpx;
+}
+
+.picker-icon {
+  font-size: 58rpx;
+  color: #0a84ff;
+  line-height: 1;
+}
+
+.picker-text {
+  font-size: 27rpx;
+  color: #1f1f1f;
+  margin-top: 8rpx;
+}
+
+.picker-selected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 32rpx;
+}
+
+.picker-filename {
+  font-size: 25rpx;
+  color: #111;
+  max-width: 90%;
+  text-align: center;
+  word-break: break-all;
+}
+
+.picker-change {
+  font-size: 23rpx;
+  color: #0a84ff;
+  margin-top: 10rpx;
+}
+
+.picker-uploading {
+  font-size: 23rpx;
+  color: #0a84ff;
+  margin-top: 10rpx;
+}
+
+.video-picker-disabled {
+  opacity: 0.7;
+  background: #f2f2f7;
+}
+
+/* 上传进度条 */
+.upload-progress-wrap {
+  margin-top: 20rpx;
+  display: flex;
+  align-items: center;
+}
+
+.upload-progress-bar {
+  flex: 1;
+  height: 8rpx;
+  background: #e5e5ea;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.upload-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0a84ff 0%, #0071e3 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+.upload-progress-text {
+  width: 70rpx;
+  text-align: right;
+  font-size: 24rpx;
+  color: #0a84ff;
+  font-weight: 500;
+  margin-left: 16rpx;
+}
+
+.codec-hint {
+  margin-top: 12rpx;
+  padding: 12rpx 14rpx;
+  border-radius: 10rpx;
+  background: #fff7e6;
+  color: #a15b00;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.debug-toggle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10rpx 18rpx;
+  margin-bottom: 16rpx;
+}
+
+.debug-toggle-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 22rpx;
+  color: #3a3a3c;
+  padding: 8rpx 0;
+}
+
+.debug-preview-wrap {
+  position: relative;
+  width: 100%;
+  height: 360rpx;
+  border-radius: 14rpx;
+  overflow: hidden;
+  background: #000;
+}
+
+.debug-video {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: #111;
+}
+
+.debug-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  background: transparent;
+}
+
+.debug-overlay-hidden {
+  opacity: 0;
+}
+
+.debug-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 4;
+  border-radius: 14rpx;
+}
+
+.debug-loading-text {
+  color: #fff;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.play-error-hint {
+  margin-top: 10rpx;
+  padding: 10rpx 12rpx;
+  border-radius: 10rpx;
+  background: #fff1f0;
+  color: #b3261e;
+  font-size: 22rpx;
+  line-height: 1.5;
+}
+
+.placeholder {
+  color: #9a9aa1;
+}
+
+.group-label {
+  font-size: 24rpx;
+  color: #6e6e73;
+  margin-bottom: 10rpx;
+}
+
+.mt {
+  margin-top: 14rpx;
+}
+
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.radio-chip {
+  display: flex;
+  align-items: center;
+  height: 62rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #e6e6ea;
+  padding: 0 16rpx;
+  margin: 0 12rpx 12rpx 0;
+  font-size: 24rpx;
+  color: #3a3a3c;
+  background: #fff;
+}
+
+.radio-chip-active {
+  border-color: #b9d9ff;
+  background: #f4f9ff;
+}
+
+.submit-wrap {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx 24rpx 34rpx;
+  background: #fff;
+  border-top: 1rpx solid #ececf0;
+}

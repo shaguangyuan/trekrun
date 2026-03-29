@@ -1,0 +1,43 @@
+<view class="s-page page">
+  <view class="s-hero">
+    <view class="s-title">分析进度</view>
+    <view class="s-subtitle">系统正在处理你的视频，流程完成后会自动生成报告。</view>
+  </view>
+
+  <view class="s-card status-card">
+    <view class="status-top">
+      <text class="status-icon">{{statusIcon}}</text>
+      <view class="s-tag {{status === 'done' ? 's-tag-success' : (status === 'failed' ? 's-tag-danger' : 's-tag-warning')}}">{{stageTag}}</view>
+    </view>
+    <view class="status-label">{{statusLabel}}</view>
+    <view class="status-desc">{{statusDesc}}</view>
+    <view wx:if="{{status === 'failed' && statusError}}" class="status-error">原因：{{statusError}}</view>
+  </view>
+
+  <view class="s-card">
+    <view class="s-card-title">处理步骤</view>
+    <view class="step-list">
+      <view class="step-item" wx:for="{{stepItems}}" wx:key="key">
+        <view class="step-dot {{item.state === 'done' ? 'dot-done' : (item.state === 'current' ? 'dot-current' : (item.state === 'failed' ? 'dot-failed' : 'dot-pending'))}}"></view>
+        <view class="step-body">
+          <view class="step-title">{{item.title}}</view>
+          <view class="step-desc">{{item.desc}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view
+    wx:if="{{status === 'done'}}"
+    class="s-btn-primary"
+    hover-class="s-btn-primary-pressed"
+    bindtap="goReport"
+  >查看分析报告</view>
+
+  <view
+    wx:if="{{status === 'failed'}}"
+    class="s-btn-secondary"
+    hover-class="s-btn-secondary-pressed"
+    bindtap="goBack"
+  >返回重新上传</view>
+</view>

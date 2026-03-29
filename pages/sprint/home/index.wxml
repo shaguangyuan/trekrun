@@ -1,0 +1,13 @@
+<view class="page">
+  <view class="header">
+    <text class="title">SprintForm</text>
+    <text class="subtitle">冲刺跑姿分析</text>
+  </view>
+
+  <view class="actions">
+    <view class="btn-primary" bindtap="goUpload">上传视频分析</view>
+    <view class="btn-secondary" bindtap="goHistory">查看历史趋势</view>
+  </view>
+
+  <view class="tip">适用于100/200冲刺途中跑侧面视频</view>
+</view>

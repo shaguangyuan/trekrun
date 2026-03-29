@@ -1,0 +1,223 @@
+<view class="s-page page" wx:if="{{loading}}">
+  <view class="loading s-card">
+    <text class="s-title-sm">正在加载报告...</text>
+  </view>
+</view>
+
+<view class="s-page page" wx:elif="{{loadError}}">
+  <view class="loading s-empty">
+    <text class="error-text">{{loadErrorText}}</text>
+    <text class="error-hint">仅在接口返回真实报告后才展示指标</text>
+  </view>
+</view>
+
+<view class="s-page page" wx:elif="{{report}}">
+  <view class="s-card report-head">
+    <view class="head-top">
+      <view class="head-title">分析报告</view>
+      <view class="s-tag {{savedToHistory ? 's-tag-success' : 's-tag-warning'}}">
+        {{savedToHistory ? '已保存' : '未保存'}}
+      </view>
+    </view>
+    <view class="head-meta">运动员 {{report.athlete_id}} · {{report.created_at}}</view>
+  </view>
+
+  <view class="section-title">核心指标</view>
+  <view class="metrics-grid">
+    <view class="metric-card" wx:for="{{metricList}}" wx:key="key">
+      <view class="metric-name">{{item.label}}</view>
+      <view class="metric-value-row">
+        <text class="metric-num">{{item.value}}</text>
+        <text class="metric-unit"> {{item.unit}}</text>
+      </view>
+      <view class="metric-delta {{item.deltaPositive ? 'delta-up' : 'delta-down'}}">
+        {{item.delta}} 较上次
+      </view>
+    </view>
+  </view>
+
+  <view class="s-card score-section">
+    <view class="score-label">技术稳定性总分</view>
+    <view class="score-value-row">
+      <text class="score-num">{{report.metrics.tech_stability_score != null ? report.metrics.tech_stability_score.toFixed(2) : '--'}}</text>
+      <text class="score-unit" wx:if="{{report.metrics.tech_stability_score != null}}"> / 100</text>
+    </view>
+    <view class="metric-delta {{scorePositive ? 'delta-up' : 'delta-down'}}">
+      {{scorePositive ? '+' : ''}}{{scoreDelta.toFixed(2)}} 较上次
+    </view>
+  </view>
+
+  <view class="s-card explain-card" wx:if="{{nl}}">
+    <view class="section-title in-card">分析过程说明</view>
+    <view class="explain-summary">{{nl.summary}}</view>
+    <view class="explain-step" wx:for="{{nlProcessSteps}}" wx:key="*this">
+      {{index + 1}}. {{item}}
+    </view>
+    <view class="explain-seg" wx:if="{{nl.selected_segment_explanation}}">
+      {{nl.selected_segment_explanation}}
+    </view>
+    <view class="warn-title" wx:if="{{hasNlWarnings}}">注意事项</view>
+    <view class="warn-row" wx:for="{{nlWarnings}}" wx:key="*this">
+      - {{item}}
+    </view>
+    <view class="fix-row" wx:if="{{nl.suggested_fix}}">建议：{{nl.suggested_fix}}</view>
+  </view>
+
+  <!-- AI 智能分析模块 -->
+  <view class="s-card ai-analysis-card" wx:if="{{ai}}">
+    <view class="ai-header" bindtap="toggleAIAnalysis">
+      <view class="section-title in-card ai-title">
+        <text class="ai-icon">AI</text>
+        <text>智能分析</text>
+      </view>
+      <view class="ai-controls">
+        <view class="s-tag {{ai._meta && ai._meta.is_fallback ? 's-tag-warning' : 's-tag-success'}}" wx:if="{{ai._meta}}">
+          {{ai._meta.is_fallback ? '离线模式' : 'AI生成'}}
+        </view>
+        <view class="more-arrow">{{showAIAnalysis ? '收起' : '展开'}}</view>
+      </view>
+    </view>
+
+    <view wx:if="{{showAIAnalysis}}">
+      <!-- AI 总结 -->
+      <view class="ai-section">
+        <view class="ai-section-title">分析总结</view>
+        <view class="ai-summary">{{ai.ai_summary}}</view>
+        <view class="ai-confidence" wx:if="{{ai.confidence_statement}}">
+          <text class="ai-confidence-label">置信度声明：</text>
+          <text>{{ai.confidence_statement}}</text>
+        </view>
+      </view>
+
+      <!-- 关键证据 -->
+      <view class="ai-section" wx:if="{{aiEvidenceList.length}}">
+        <view class="ai-section-title">分析依据</view>
+        <view class="ai-evidence-item" wx:for="{{aiEvidenceList}}" wx:key="*this">
+          <text class="ai-evidence-dot">•</text>
+          <text>{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 主要技术问题 -->
+      <view class="ai-section" wx:if="{{aiTechFindingsList.length}}">
+        <view class="ai-section-title">主要技术问题</view>
+        <view class="ai-finding-item" wx:for="{{aiTechFindingsList}}" wx:key="title">
+          <view class="ai-finding-header">
+            <text class="ai-finding-title">{{item.title}}</text>
+            <view class="s-tag {{item.confidence === 'high' ? 's-tag-success' : (item.confidence === 'medium' ? 's-tag-warning' : 's-tag-danger')}}">
+              {{item.confidence === 'high' ? '高置信' : (item.confidence === 'medium' ? '中置信' : '低置信')}}
+            </view>
+          </view>
+          <view class="ai-finding-desc">{{item.description}}</view>
+          <view class="ai-finding-metrics" wx:if="{{item.related_metrics && item.related_metrics.length}}">
+            <text class="ai-finding-metrics-label">相关指标：</text>
+            <text wx:for="{{item.related_metrics}}" wx:for-item="metric" wx:key="metric">{{metric}} </text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 训练建议 -->
+      <view class="ai-section" wx:if="{{aiSuggestionsList.length}}">
+        <view class="ai-section-title">训练建议</view>
+        <view class="ai-suggestion-item" wx:for="{{aiSuggestionsList}}" wx:key="*this">
+          <text class="ai-suggestion-num">{{index + 1}}.</text>
+          <text>{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 数据可靠性提示 -->
+      <view class="ai-section" wx:if="{{aiDataReliabilityList.length}}">
+        <view class="ai-section-title ai-risk-title">数据可靠性提示</view>
+        <view class="ai-risk-item ai-risk-data" wx:for="{{aiDataReliabilityList}}" wx:key="description">
+          <text class="ai-risk-icon">⚠️</text>
+          <text>{{item.description}}</text>
+        </view>
+      </view>
+
+      <!-- 其他技术提醒 -->
+      <view class="ai-section" wx:if="{{aiOtherRiskFlagsList.length}}">
+        <view class="ai-section-title ai-risk-title">注意事项</view>
+        <view class="ai-risk-item ai-risk-tech" wx:for="{{aiOtherRiskFlagsList}}" wx:key="*this">
+          <text class="ai-risk-icon">⚠️</text>
+          <text>{{item.message}}</text>
+        </view>
+      </view>
+
+      <!-- 局限性说明 -->
+      <view class="ai-section" wx:if="{{ai.limitations && ai.limitations.length}}">
+        <view class="ai-section-title ai-limit-title">分析局限</view>
+        <view class="ai-limit-item" wx:for="{{ai.limitations}}" wx:key="*this">
+          <text>• {{item}}</text>
+        </view>
+      </view>
+
+      <!-- 下一步建议 -->
+      <view class="ai-section" wx:if="{{ai.recommended_next_steps && ai.recommended_next_steps.length}}">
+        <view class="ai-section-title">下一步建议</view>
+        <view class="ai-next-item" wx:for="{{ai.recommended_next_steps}}" wx:key="*this">
+          <text class="ai-next-arrow">→</text>
+          <text>{{item}}</text>
+        </view>
+      </view>
+
+      <!-- 生成 / 刷新按钮 -->
+      <view class="ai-refresh-row">
+        <view class="s-btn-secondary ai-refresh-btn" bindtap="generateAIAnalysis" hover-class="s-btn-secondary-pressed" wx:if="{{aiIsFallback}}">
+          {{aiLoading ? '生成中，预计需要 1-2 分钟...' : '生成 AI 智能分析'}}
+        </view>
+        <view class="s-btn-secondary ai-refresh-btn" bindtap="refreshAIAnalysis" hover-class="s-btn-secondary-pressed" wx:else>
+          {{aiLoading ? '刷新中...' : '重新生成分析'}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-title" wx:if="{{metricExplainList.length}}">指标解释</view>
+  <view class="metric-explain-list" wx:if="{{metricExplainList.length}}">
+    <view class="s-card explain-item" wx:for="{{metricExplainList}}" wx:key="key">
+      <view class="explain-item-top">
+        <view class="explain-item-name">{{item.key}}</view>
+        <view class="s-tag {{item.available ? 's-tag-success' : 's-tag-danger'}}">{{item.available ? '可用' : '不可用'}}</view>
+      </view>
+      <view class="explain-item-text">{{item.explanation}}</view>
+      <view class="explain-item-meta">
+        <text>置信度 {{item.confidence}}</text>
+        <text>使用帧 {{item.used_frames}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="s-card">
+    <view class="more-head" bindtap="toggleMoreIndicators" hover-class="record-item-press">
+      <view class="section-title in-card">更多分析指标</view>
+      <view class="more-arrow">{{showMoreIndicators ? '收起' : '展开'}}</view>
+    </view>
+    <view class="more-groups" wx:if="{{showMoreIndicators}}">
+      <view class="group-block" wx:for="{{featureGroupList}}" wx:key="key">
+        <view class="group-title">{{item.title}}</view>
+        <view class="group-item" wx:for="{{item.items}}" wx:key="key">
+          <view class="group-item-left">
+            <view class="group-item-name">{{item.label}}</view>
+            <view class="group-item-exp">{{item.explanation}}</view>
+          </view>
+          <view class="group-item-right">
+            <view class="group-item-value">{{item.value}}</view>
+            <view class="group-item-unit">{{item.unit}}</view>
+            <view class="group-item-conf">置信 {{item.confidence}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="tip">* 本报告仅用于训练反馈，不构成医疗或伤病结论</view>
+
+  <view
+    class="s-btn-primary {{savedToHistory ? 's-btn-primary-disabled' : ''}}"
+    hover-class="{{savedToHistory ? '' : 's-btn-primary-pressed'}}"
+    bindtap="onSaveToHistory"
+  >
+    {{savedToHistory ? '已保存到历史' : (saving ? '保存中...' : '保存到历史')}}
+  </view>
+  <view class="s-btn-secondary" hover-class="s-btn-secondary-pressed" bindtap="goHistory">查看历史趋势</view>
+</view>

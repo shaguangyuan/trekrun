@@ -1,0 +1,96 @@
+@import "/pages/sprint/common/ui.wxss";
+
+.status-card {
+  margin-bottom: 16rpx;
+}
+
+.status-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.status-icon {
+  font-size: 54rpx;
+  line-height: 1.2;
+}
+
+.status-label {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 10rpx;
+}
+
+.status-desc {
+  font-size: 25rpx;
+  color: #6e6e73;
+  line-height: 1.6;
+}
+
+.status-error {
+  font-size: 24rpx;
+  color: #b3261e;
+  margin-top: 12rpx;
+  background: #fff1f0;
+  border-radius: 10rpx;
+  padding: 10rpx 12rpx;
+}
+
+.step-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 12rpx 0;
+}
+
+.step-dot {
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 50%;
+  margin: 12rpx 16rpx 0 4rpx;
+  border: 1rpx solid #c7c7cc;
+  box-sizing: border-box;
+}
+
+.dot-done {
+  background: #34c759;
+  border-color: #34c759;
+}
+
+.dot-current {
+  background: #0a84ff;
+  border-color: #0a84ff;
+}
+
+.dot-failed {
+  background: #ff3b30;
+  border-color: #ff3b30;
+}
+
+.dot-pending {
+  background: #fff;
+}
+
+.step-body {
+  flex: 1;
+  border-bottom: 1rpx solid #f0f0f4;
+  padding-bottom: 12rpx;
+}
+
+.step-item:last-child .step-body {
+  border-bottom: 0;
+}
+
+.step-title {
+  font-size: 27rpx;
+  color: #1f1f1f;
+  font-weight: 600;
+}
+
+.step-desc {
+  margin-top: 4rpx;
+  font-size: 23rpx;
+  color: #8e8e93;
+  line-height: 1.55;
+}

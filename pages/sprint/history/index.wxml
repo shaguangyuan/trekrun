@@ -1,0 +1,60 @@
+<view class="s-page page">
+  <view class="s-card athlete-bar">
+    <view class="athlete-head">
+      <text class="athlete-label">运动员 {{athleteId}}</text>
+      <view class="s-tag s-tag-success">已保存 {{savedCount}} 条</view>
+    </view>
+    <view class="athlete-desc">仅展示已手动保存到历史的分析结果。</view>
+  </view>
+
+  <view class="loading-inline s-card" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+
+  <view class="loading-inline s-card" wx:elif="{{loadError}}">
+    <text class="error-text">趋势加载失败，请稍后重试</text>
+  </view>
+
+  <block wx:else>
+    <view class="chart-section s-card" wx:if="{{history.length > 0}}">
+      <view class="chart-title">技术稳定性总分趋势</view>
+      <view class="chart-bars">
+        <view class="bar-col" wx:for="{{history}}" wx:key="video_id">
+          <text class="bar-score">{{item.tech_stability_score != null ? item.tech_stability_score : '--'}}</text>
+          <view class="bar-track">
+            <view class="bar-fill" style="height: {{item.barHeight}}rpx;"></view>
+          </view>
+          <text class="bar-date">{{item.shortDate}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="section-title">历史记录</view>
+
+    <view class="record-list" wx:if="{{history.length > 0}}">
+      <view
+        class="record-item"
+        wx:for="{{history}}"
+        wx:key="video_id"
+        bindtap="goReport"
+        hover-class="record-item-press"
+        data-id="{{item.video_id}}"
+      >
+        <view class="record-left">
+          <text class="record-date">{{item.created_at}}</text>
+        </view>
+        <view class="record-right">
+          <text class="record-score">{{item.tech_stability_score != null ? item.tech_stability_score : '--'}}</text>
+          <text class="record-unit" wx:if="{{item.tech_stability_score != null}}"> / 100</text>
+          <text class="record-arrow"> ›</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="s-empty" wx:else>
+      <view class="s-empty-title">暂无已保存记录</view>
+      <view class="s-empty-desc">完成分析后，在报告页点击“保存到历史”即可显示在这里。</view>
+      <view class="s-btn-secondary empty-btn" hover-class="s-btn-secondary-pressed" bindtap="goUpload">去上传分析</view>
+    </view>
+  </block>
+</view>

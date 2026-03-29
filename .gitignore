@@ -1,0 +1,23 @@
+# Secrets — never commit
+.env
+.env.*
+!**/.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local data & large artifacts
+uploads/
+backend/models/*.task
+
+# Optional (uncomment if you use them)
+# node_modules/
+# .DS_Store
+# Thumbs.db
